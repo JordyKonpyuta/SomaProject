@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Public/InteractInterface.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -19,6 +20,9 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ASomaProjectCharacter::ASomaProjectCharacter()
 {
+	// Physic Handler Component Creation
+	PhysicsHandlerComp = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsComp"));
+
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
 	
@@ -58,6 +62,17 @@ void ASomaProjectCharacter::BeginPlay()
 
 }
 
+void ASomaProjectCharacter::Tick(float Deltaseconds)
+{
+	Super::Tick(Deltaseconds);
+
+	if (PhysicsHandlerComp->GetGrabbedComponent() != nullptr)
+	{
+		PhysicsHandlerComp->SetTargetLocation(GetActorLocation()+GetFirstPersonCameraComponent()->GetForwardVector()*400);
+	}
+}
+
+
 //////////////////////////////////////////////////////////////////////////// Input
 
 void ASomaProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -76,7 +91,8 @@ void ASomaProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASomaProjectCharacter::Look);
 
 		// Interacting
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ASomaProjectCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ASomaProjectCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this,&ASomaProjectCharacter::StopInteract);
 	}
 	else
 	{
@@ -103,7 +119,7 @@ void ASomaProjectCharacter::Look(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (Controller != nullptr && !IsInteracting)
 	{
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
@@ -126,8 +142,16 @@ void ASomaProjectCharacter::Interact(const FInputActionValue& Value)
 	{
 		if (Cast<IInteractInterface>(Hit.GetActor()))
 		{
-			Cast<IInteractInterface>(Hit.GetActor())->Execute_EventInteract(Hit.GetActor());
+			IInteractInterface::Execute_EventInteract(Hit.GetActor());
 		}
+	}
+}
+
+void ASomaProjectCharacter::StopInteract(const FInputActionValue& Value)
+{
+	if (PhysicsHandlerComp->GetGrabbedComponent() != nullptr)
+	{
+		PhysicsHandlerComp->ReleaseComponent();
 	}
 }
 

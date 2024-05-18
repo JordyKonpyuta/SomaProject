@@ -5,21 +5,19 @@
 #include "CoreMinimal.h"
 #include "InteractInterface.h"
 #include "GameFramework/Actor.h"
-#include "InteractObject.generated.h"
+#include "Interact_Drawer.generated.h"
 
 UCLASS()
-class SOMAPROJECT_API AInteractObject : public AActor, public IInteractInterface
+class SOMAPROJECT_API AInteract_Drawer : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, Category="Mesh")
-	UStaticMeshComponent* Mesh;
-
-
 	
 public:	
 	// Sets default values for this actor's properties
-	AInteractObject();
+	AInteract_Drawer();
+
+	FVector Origin = GetActorLocation();
+	FVector MaxDistance = GetActorLocation()+GetActorForwardVector()*200;
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,5 +28,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void EventInteract_Implementation() override;
+	void GetInteractAxis(FVector2d MovementAxis);
 
 };

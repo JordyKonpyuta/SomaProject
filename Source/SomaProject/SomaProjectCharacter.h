@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "SomaProjectCharacter.generated.h"
 
 class UInputComponent;
@@ -46,13 +47,18 @@ public:
 	ASomaProjectCharacter();
 
 protected:
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	virtual void Tick(float Deltaseconds) override;
 
 	UPROPERTY(EditAnywhere, Category="Collision")
 	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Pawn;
 
 public:
-		
+	
+	UPROPERTY(EditAnywhere)
+	UPhysicsHandleComponent* PhysicsHandlerComp;
+	FVector2d InteractVector;
+	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -64,6 +70,9 @@ public:
 	// Interact Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
+
+	UPROPERTY(EditAnywhere)
+	bool IsInteracting;
 
 	/** Setter to set the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
@@ -82,7 +91,8 @@ protected:
 
 	// Called for Interact Input
 	void Interact(const FInputActionValue& Value);
-
+	void StopInteract(const FInputActionValue& Value);
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;

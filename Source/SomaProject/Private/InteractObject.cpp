@@ -3,15 +3,15 @@
 
 #include "SomaProject/Public/InteractObject.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "SomaProject/SomaProjectCharacter.h"
+
 // Sets default values
 AInteractObject::AInteractObject()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Mesh_Drawer = CreateDefaultSubobject<UStaticMeshComponent>("Drawer");
-	Mesh_Cupboard_RightDoor = CreateDefaultSubobject<UStaticMeshComponent>("Cupboard_RightDoor");
-	Mesh_Cupboard_LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>("Cupboard_LeftDoor");
-	Mesh_Note = CreateDefaultSubobject<UStaticMeshComponent>("Note");
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 
 }
 
@@ -19,7 +19,6 @@ AInteractObject::AInteractObject()
 void AInteractObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -29,9 +28,11 @@ void AInteractObject::Tick(float DeltaTime)
 
 }
 
-bool AInteractObject::EventInteract_Implementation()
+void AInteractObject::EventInteract_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("COUCOU"));
-	return true;
+	if (ASomaProjectCharacter* PlayerRef = Cast<ASomaProjectCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		PlayerRef->PhysicsHandlerComp->GrabComponentAtLocation(Mesh, "None", GetActorLocation());
+	}
 }
 
