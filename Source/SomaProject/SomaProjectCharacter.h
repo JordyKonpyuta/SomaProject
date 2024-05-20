@@ -46,6 +46,12 @@ class ASomaProjectCharacter : public ACharacter
 public:
 	ASomaProjectCharacter();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void DisplayWidget();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void RemoveWidget();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float Deltaseconds) override;

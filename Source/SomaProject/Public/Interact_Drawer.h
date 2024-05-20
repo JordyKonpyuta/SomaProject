@@ -20,7 +20,7 @@ public:
 	UStaticMeshComponent* Mesh;
 
 	FVector Origin;
-	FVector MaxDistance = GetActorLocation()+GetActorForwardVector()*200;
+	FVector MaxDistance;
 
 protected:
 	// Called when the game starts or when spawned

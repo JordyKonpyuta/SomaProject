@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Blueprint/UserWidget.h"
 #include "Engine/LocalPlayer.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Public/InteractInterface.h"
@@ -46,6 +47,15 @@ ASomaProjectCharacter::ASomaProjectCharacter()
 
 }
 
+void ASomaProjectCharacter::DisplayWidget_Implementation()
+{
+}
+
+void ASomaProjectCharacter::RemoveWidget_Implementation()
+{
+	
+}
+
 void ASomaProjectCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -70,6 +80,27 @@ void ASomaProjectCharacter::Tick(float Deltaseconds)
 	{
 		PhysicsHandlerComp->SetTargetLocation(GetActorLocation()+GetFirstPersonCameraComponent()->GetForwardVector()*400);
 	}
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	FVector TraceStart = GetFirstPersonCameraComponent()->GetComponentLocation();
+	FVector TraceEnd = TraceStart + GetFirstPersonCameraComponent()->GetForwardVector() * 300.f;
+	FHitResult Hit;
+
+	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, TraceChannelProperty, QueryParams);
+	
+		if (Hit.bBlockingHit)
+		{
+			if (Cast<IInteractInterface>(Hit.GetActor()))
+			{
+				DisplayWidget();
+			}
+		
+		}
+		else
+		{
+			RemoveWidget();
+		}
 }
 
 
@@ -146,6 +177,7 @@ void ASomaProjectCharacter::Interact(const FInputActionValue& Value)
 	{
 		if (Cast<IInteractInterface>(Hit.GetActor()))
 		{
+			RemoveWidget();
 			IInteractInterface::Execute_EventInteract(Hit.GetActor());
 		}
 	}

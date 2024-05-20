@@ -21,6 +21,7 @@ void AInteract_Drawer::BeginPlay()
 {
 	Super::BeginPlay();
 	Origin = GetActorLocation();
+	MaxDistance = GetActorLocation()+GetActorForwardVector()*70;
 	
 }
 
@@ -43,8 +44,7 @@ void AInteract_Drawer::GetInteractAxis(FVector MovementAxis)
 		FVector NewLocation = GetActorLocation()+GetActorForwardVector()*(MovementAxis*5);
 		NewLocation.Z = GetActorLocation().Z;
 		
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("%s"), *NewLocation.ToString()));
-		SetActorLocation(FMath::VInterpTo(GetActorLocation(), ClampVector(NewLocation, Origin, GetActorLocation()+GetActorForwardVector()*(MovementAxis*20)), 1.0f,2.0f));
+		SetActorLocation(FMath::VInterpTo(GetActorLocation(), ClampVector(NewLocation, Origin, MaxDistance), 1.0f,2.0f));
 	}
 }
 
