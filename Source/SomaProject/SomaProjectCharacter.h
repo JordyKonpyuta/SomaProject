@@ -57,7 +57,7 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	UPhysicsHandleComponent* PhysicsHandlerComp;
-	FVector2d InteractVector;
+	FVector InteractVector;
 	bool IsInteracting;
 	
 	/** Look Input Action */

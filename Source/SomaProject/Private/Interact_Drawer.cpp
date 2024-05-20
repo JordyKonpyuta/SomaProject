@@ -20,6 +20,7 @@ AInteract_Drawer::AInteract_Drawer()
 void AInteract_Drawer::BeginPlay()
 {
 	Super::BeginPlay();
+	Origin = GetActorLocation();
 	
 }
 
@@ -27,19 +28,23 @@ void AInteract_Drawer::BeginPlay()
 void AInteract_Drawer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	GetInteractAxis(Cast<ASomaProjectCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))->InteractVector);
 }
 
 void AInteract_Drawer::EventInteract_Implementation()
 {
 	Cast<ASomaProjectCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))->IsInteracting = true;
-	GetInteractAxis(Cast<ASomaProjectCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))->InteractVector);
 }
 
-void AInteract_Drawer::GetInteractAxis(FVector2d MovementAxis)
+void AInteract_Drawer::GetInteractAxis(FVector MovementAxis)
 {
-	FVector NewLocation = FVector(MovementAxis.X, MovementAxis.Y, 0);
-	ClampVector(NewLocation, Origin, GetActorForwardVector()*200);
-	SetActorLocation(FMath::VInterpTo(GetActorLocation(), NewLocation, 1.0f,5.0f));
+	if (Cast<ASomaProjectCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))->IsInteracting == true)
+	{
+		FVector NewLocation = GetActorLocation()+GetActorForwardVector()*(MovementAxis*5);
+		NewLocation.Z = GetActorLocation().Z;
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("%s"), *NewLocation.ToString()));
+		SetActorLocation(FMath::VInterpTo(GetActorLocation(), ClampVector(NewLocation, Origin, GetActorLocation()+GetActorForwardVector()*(MovementAxis*20)), 1.0f,2.0f));
+	}
 }
 

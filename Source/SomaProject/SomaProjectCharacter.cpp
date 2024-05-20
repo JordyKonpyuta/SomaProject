@@ -124,11 +124,10 @@ void ASomaProjectCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("%s"), *LookAxisVector.ToString()));
 	}
 	else
 	{
-		InteractVector = LookAxisVector;
+		InteractVector = FVector(LookAxisVector.X, LookAxisVector.Y, 0);
 	}
 }
 

@@ -19,7 +19,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="Mesh")
 	UStaticMeshComponent* Mesh;
 
-	FVector Origin = GetActorLocation();
+	FVector Origin;
 	FVector MaxDistance = GetActorLocation()+GetActorForwardVector()*200;
 
 protected:
@@ -31,6 +31,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void EventInteract_Implementation() override;
-	void GetInteractAxis(FVector2d MovementAxis);
+	void GetInteractAxis(FVector MovementAxis);
 
 };
