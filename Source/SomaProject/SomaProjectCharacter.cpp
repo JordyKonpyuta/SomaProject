@@ -124,6 +124,11 @@ void ASomaProjectCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("%s"), *LookAxisVector.ToString()));
+	}
+	else
+	{
+		InteractVector = LookAxisVector;
 	}
 }
 
@@ -149,6 +154,8 @@ void ASomaProjectCharacter::Interact(const FInputActionValue& Value)
 
 void ASomaProjectCharacter::StopInteract(const FInputActionValue& Value)
 {
+	IsInteracting = false;
+	
 	if (PhysicsHandlerComp->GetGrabbedComponent() != nullptr)
 	{
 		PhysicsHandlerComp->ReleaseComponent();

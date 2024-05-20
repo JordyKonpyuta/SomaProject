@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	AInteract_Drawer();
 
+	UPROPERTY(EditAnywhere, Category="Mesh")
+	UStaticMeshComponent* Mesh;
+
 	FVector Origin = GetActorLocation();
 	FVector MaxDistance = GetActorLocation()+GetActorForwardVector()*200;
 

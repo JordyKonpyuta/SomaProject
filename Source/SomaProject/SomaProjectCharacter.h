@@ -58,6 +58,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UPhysicsHandleComponent* PhysicsHandlerComp;
 	FVector2d InteractVector;
+	bool IsInteracting;
 	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -70,10 +71,7 @@ public:
 	// Interact Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
-
-	UPROPERTY(EditAnywhere)
-	bool IsInteracting;
-
+	
 	/** Setter to set the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
